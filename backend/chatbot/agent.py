@@ -1,13 +1,11 @@
 import json
 
-def load_knowledge_base():
-    with open("data/knowledge_base.json", "r", encoding="utf-8") as file:
-        return json.load(file)
+with open("data/knowledge_base.json", "r") as f:
+    knowledge = json.load(f)
 
-kb = load_knowledge_base()
-
-def get_response_from_knowledge(question: str) -> str:
-    for item in kb:
-        if any(word.lower() in item["question"].lower() for word in question.split()):
-            return item["answer"]
-    return "Sorry, I don't have an answer for that question."
+def get_bot_response(message: str) -> str:
+    message = message.lower()
+    for category, info in knowledge.items():
+        if category.lower() in message:
+            return info
+    return "Sorry, I couldn't find information related to your query."
