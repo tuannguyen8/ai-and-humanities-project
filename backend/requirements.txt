@@ -1,6 +1,5 @@
 fastapi
 uvicorn
 pydantic
-requests
-beautifulsoup4
+openai
 
