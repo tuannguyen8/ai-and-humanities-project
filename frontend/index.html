@@ -1,40 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI + Humanities Project</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSU AI Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header>
-    <h1>AI + Humanities Chatbot</h1>
-    <nav>
-      <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">About</a></li>
-      </ul>
-    </nav>
-  </header>
+    <div class="app-container">
+        <header class="header">
+            <div class="logo-container">
+                <img src="psu-logo.png" alt="Portland State University Logo" class="psu-logo">
+            </div>
+            <!-- <h1 class="header-title">AI ASSISTANT</h1> -->
+        </header>
 
-  <main>
-    <section>
-      <h2>Ask a Question</h2>
-      <form id="chat-form">
-        <label for="user-input">Your Question:</label>
-        <input type="text" id="user-input" name="user-input" required />
-        <button type="submit">Ask</button>
-      </form>
-      <div id="response">
-        <!-- Chatbot response will appear here -->
-      </div>
-    </section>
-  </main>
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="capabilities-section">
+                    <h2>I can help with:</h2>
+                    <ul class="capabilities-list">
+                        <li>
+                            <span class="capability-icon"></span>
+                            <span class="capability-text">Course information and registration</span>
+                        </li>
+                        <li>
+                            <span class="capability-icon"></span>
+                            <span class="capability-text">Campus navigation and building locations</span>
+                        </li>
+                        <li>
+                            <span class="capability-icon"></span>
+                            <span class="capability-text">Academic calendar and deadlines</span>
+                        </li>
+                        <li>
+                            <span class="capability-icon"></span>
+                            <span class="capability-text">Degree requirements and academic advising</span>
+                        </li>
+                        <li>
+                            <span class="capability-icon"></span>
+                            <span class="capability-text">Financial aid and scholarship information</span>
+                        </li>
+                        <li>
+                            <span class="capability-icon"></span>
+                            <span class="capability-text">Housing and residence life</span>
+                        </li>
+                        <li>
+                            <span class="capability-icon"></span>
+                            <span class="capability-text">Student clubs and campus activities</span>
+                        </li>
+                    </ul>
+                </div>
+                <button class="new-chat-btn">New Chat</button>
+            </div>
 
-  <footer>
-    <p>&copy; 2025 AI + Humanities Project</p>
-  </footer>
+            <div class="chat-container">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message assistant-message">
+                        <div class="message-avatar">
+                            <img src="psu-icon.png" alt="PSU Assistant" class="avatar-img">
+                        </div>
+                        <div class="message-content">
+                            <p>Hello! I'm the PSU AI Assistant. How can I help you today with Portland State University information?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <textarea id="user-input" placeholder="Type your question here..." rows="1"></textarea>
+                    <button id="send-button" class="send-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <script src="app.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
