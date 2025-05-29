@@ -1,15 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from models.schema import Question, ChatResponse
-import json, os
-from datetime import datetime
-import openai
-
-# Set your OpenAI API key here
-openai.api_key = ""
+from pydantic import BaseModel
+import json
+import os
 
 app = FastAPI()
 
+# CORS setup
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -17,42 +14,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-DATA_FILE = "storage/questions.json"
+# Request format must now include both question and reply
+class ChatEntry(BaseModel):
+    question: str
+    reply: str
 
-@app.post("/submit", response_model=ChatResponse)
-async def submit_question(question: Question):
-    user_message = question.message
+# Save interaction to file
+def save_interaction(entry: ChatEntry, file_path="questions.json"):
+    data = []
+    if os.path.exists(file_path):
+        with open(file_path, "r") as f:
+            try:
+                data = json.load(f)
+            except json.JSONDecodeError:
+                pass
+    data.append(entry.dict())
+    with open(file_path, "w") as f:
+        json.dump(data, f, indent=2)
 
-    # Call OpenAI GPT model to get a smart answer
-    try:
-        completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # Or "gpt-4" if available
-            messages=[
-                {"role": "system", "content": "You are a helpful university assistant."},
-                {"role": "user", "content": user_message}
-            ]
-        )
-        answer = completion['choices'][0]['message']['content'].strip()
-    except Exception as e:
-        answer = f"Error getting response from LLM: {str(e)}"
-
-    # Save question and answer
-    entry = {
-        "timestamp": datetime.now().isoformat(),
-        "question": user_message,
-        "answer": answer
-    }
-
-    if not os.path.exists(DATA_FILE):
-        with open(DATA_FILE, "w") as f:
-            json.dump([], f)
-
-    with open(DATA_FILE, "r") as f:
-        data = json.load(f)
-
-    data.append(entry)
-
-    with open(DATA_FILE, "w") as f:
-        json.dump(data, f, indent=4)
-
-    return {"reply": answer}
+# POST endpoint to receive question + reply
+@app.post("/chat")
+async def chat(entry: ChatEntry):
+    save_interaction(entry)
+    return {"status": "saved"}
