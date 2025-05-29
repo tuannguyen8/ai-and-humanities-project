@@ -1,21 +1,19 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, Request
 from models.schema import ChatRequest, ChatResponse
-from chatbot.agent import get_response_from_knowledge
-from chatbot.logger import log_conversation
+from chatbot.agent import get_bot_response
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+# CORS for frontend calls
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 @app.post("/chat", response_model=ChatResponse)
-def chat(request: ChatRequest):
-    answer = get_response_from_knowledge(request.question)
-    log_conversation(request.question, answer)
-    return ChatResponse(answer=answer)
+async def chat(request: ChatRequest):
+    reply = get_bot_response(request.message)
+    return ChatResponse(reply=reply)
