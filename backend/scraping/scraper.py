@@ -11,6 +11,6 @@ def scrape_text_from_url(url: str) -> str:
 
 # Example usage
 if __name__ == "__main__":
-    test_url = "https://docs.google.com/document/d/EXAMPLE_ID/pub"
+    test_url = "https://docs.google.com/document/d/knowledge_base.json/pub"
     content = scrape_text_from_url(test_url)
     print(content[:1000])  # Print first 1000 characters of scraped text
