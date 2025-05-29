@@ -1,22 +1,21 @@
-from fastapi import FastAPI, Request
-from pydantic import BaseModel
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from chat.rag_engine import get_rag_response  # You create this
+from models.schema import ChatRequest, ChatResponse
+from chatbot.agent import get_response_from_knowledge
+from chatbot.logger import log_conversation
 
 app = FastAPI()
 
-# CORS for frontend access
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Limit this in production
+    allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-class ChatRequest(BaseModel):
-    message: str
-
-@app.post("/chat")
-async def chat_endpoint(req: ChatRequest):
-    reply = get_rag_response(req.message)
-    return {"reply": reply}
+@app.post("/chat", response_model=ChatResponse)
+def chat(request: ChatRequest):
+    answer = get_response_from_knowledge(request.question)
+    log_conversation(request.question, answer)
+    return ChatResponse(answer=answer)
