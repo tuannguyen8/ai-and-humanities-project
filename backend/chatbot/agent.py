@@ -1,37 +1,13 @@
-from langchain.vectorstores import FAISS
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.llms import OpenAI
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.document_loaders import TextLoader
-from langchain.chains import RetrievalQA
-import os
+import json
 
+def load_knowledge_base():
+    with open("data/knowledge_base.json", "r", encoding="utf-8") as file:
+        return json.load(file)
 
-os.environ["OPENAI_API_KEY"] = "your-openai-api-key"
+kb = load_knowledge_base()
 
-
-def load_documents(directory="documents"):
-    from pathlib import Path
-    docs = []
-    for file in Path(directory).glob("*.txt"):
-        loader = TextLoader(str(file))
-        docs.extend(loader.load())
-    return docs
-
-
-def get_rag_response(question):
-    documents = load_documents()
-
-    splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=50)
-    texts = splitter.split_documents(documents)
-
-    embeddings = OpenAIEmbeddings()
-    vectorstore = FAISS.from_documents(texts, embeddings)
-
-    retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 3})
-    llm = OpenAI(temperature=0.3)
-
-    qa = RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
-    result = qa.run(question)
-
-    return result
+def get_response_from_knowledge(question: str) -> str:
+    for item in kb:
+        if any(word.lower() in item["question"].lower() for word in question.split()):
+            return item["answer"]
+    return "Sorry, I don't have an answer for that question."
