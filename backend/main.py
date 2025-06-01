@@ -1,22 +1,22 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from dotenv import load_dotenv
-import os
 import json
+import os
+from dotenv import load_dotenv
 from openai import OpenAI
 
-# Load .env file and OpenAI API key
+# Load environment variables
 load_dotenv()
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-if not OPENAI_API_KEY:
-    raise ValueError("Missing OPENAI_API_KEY in .env file")
+api_key = os.getenv("OPENAI_API_KEY")
 
-client = OpenAI(api_key=OPENAI_API_KEY)
+# Initialize OpenAI client
+client = OpenAI(api_key=api_key)
 
+# Create FastAPI app
 app = FastAPI()
 
-# Allow frontend access (CORS)
+# Enable CORS for frontend communication
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -25,55 +25,63 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Request schema
+# Request model
 class QuestionRequest(BaseModel):
     question: str
 
-# Path to Q&A storage
-QA_DATA_FILE = "qa_data.json"
+# Only allow PSU, ASU, and UO
+ALLOWED_KEYWORDS = [
+    "portland state", "psu",
+    "arizona state", "asu",
+    "university of oregon", "uo"
+]
 
-# Append Q&A to file
-def save_qa(question, answer):
-    data = []
-    if os.path.exists(QA_DATA_FILE):
-        try:
-            with open(QA_DATA_FILE, "r", encoding="utf-8") as f:
-                data = json.load(f)
-        except json.JSONDecodeError:
-            data = []
+# Function to fetch answer from OpenAI
+def get_openai_response(prompt: str) -> str:
+    if not any(kw in prompt.lower() for kw in ALLOWED_KEYWORDS):
+        return "Sorry, I can only help with Portland State University (PSU), Arizona State University (ASU), and University of Oregon (UO)."
 
-    data.append({"question": question, "answer": answer})
-    with open(QA_DATA_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2)
-
-# Root endpoint (health check)
-@app.get("/")
-def read_root():
-    return {"message": "University Info API is live."}
-
-# Main endpoint
-@app.post("/ask")
-def ask_question(req: QuestionRequest):
     try:
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {
                     "role": "system",
-                    "content": (
-                        "You are a helpful university assistant. Only respond to questions related to "
-                        "Portland State University (PSU) or Oregon State University (OSU) or University of Oregon (UO). "
-                        "If the question is about another university or unrelated topic, reply: "
-                        "'Sorry, I can only help with PSU, OSU and UO information.'"
-                    )
+                    "content": "You are an academic assistant that only provides information about PSU, ASU, and UO."
                 },
-                {"role": "user", "content": req.question}
-            ]
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+            max_tokens=500
         )
+        return response.choices[0].message.content.strip()
+    except Exception as e:
+        return f"OpenAI API error: {e}"
 
-        answer = response.choices[0].message.content.strip()
-        save_qa(req.question, answer)
-        return {"answer": answer}
+# API endpoint
+@app.post("/ask")
+async def ask_question(req: QuestionRequest):
+    question = req.question.strip()
+    answer = get_openai_response(question)
+
+    # Save to qa_data.json
+    try:
+        path = os.path.join(os.path.dirname(__file__), "qa_data.json")
+        data = []
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+        data.append({"question": question, "answer": answer})
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
 
     except Exception as e:
-        return {"answer": f"Error: {str(e)}"}
+        print(f"Error writing to file: {e}")
+
+    return {"answer": answer}
+
+# Default health route
+@app.get("/")
+def root():
+    return {"message": "University Assistant API is live."}
