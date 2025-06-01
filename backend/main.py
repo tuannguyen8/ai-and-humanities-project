@@ -62,9 +62,9 @@ def ask_question(req: QuestionRequest):
                     "role": "system",
                     "content": (
                         "You are a helpful university assistant. Only respond to questions related to "
-                        "Portland State University (PSU) or Oregon State University (OSU) or Arizona State University (ASU). "
+                        "Portland State University (PSU) or Oregon State University (OSU) or University of Oregon (UO). "
                         "If the question is about another university or unrelated topic, reply: "
-                        "'Sorry, I can only help with PSU, OSU and ASU information.'"
+                        "'Sorry, I can only help with PSU, OSU and UO information.'"
                     )
                 },
                 {"role": "user", "content": req.question}
