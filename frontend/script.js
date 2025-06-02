@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }[tag]));
   }
 
-  // 📌 Feature: Show sample questions when a sidebar topic is clicked
+  // Show sample questions when a sidebar topic is clicked
   const capabilityItems = document.querySelectorAll(".capabilities-list li");
 
   const sampleQuestionsMap = {
