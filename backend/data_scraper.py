@@ -6,7 +6,7 @@ from urllib.parse import urljoin, urlparse, urldefrag
 BASE_URL = "https://www.pdx.edu/"
 OUTPUT_DIR = "./local_data/html"
 VISITED = set()
-MAX_PAGES = 400
+MAX_PAGES = 300
 
 def is_valid_url(url):
     parsed = urlparse(url)
