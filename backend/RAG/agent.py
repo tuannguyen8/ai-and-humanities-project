@@ -9,6 +9,7 @@ from langchain.vectorstores import Chroma
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from langchain import hub
+from langchain_core.prompts import PromptTemplate
 from langchain_community.document_loaders import UnstructuredHTMLLoader, DirectoryLoader
 from langchain_google_genai import ChatGoogleGenerativeAI, HarmCategory, HarmBlockThreshold, GoogleGenerativeAIEmbeddings
 from langchain_community.agent_toolkits.load_tools import load_tools
@@ -34,7 +35,25 @@ vectorstore = Chroma(
 )
 """RAG Application Document Loader similar to HW1"""
 retriever = vectorstore.as_retriever()
-prompt = hub.pull("rlm/rag-prompt")
+
+prompt = PromptTemplate.from_template(
+    """
+    You are a helpful assistant answering questions about Portland State University.
+    
+    Use the following context to answer the question in a clean, **well-structured**, and **easy-to-read** format.
+    
+    - Use bullet points for lists.
+    - Use numbered steps when explaining a process.
+    - Bold section titles and important words.
+    - If applicable, break down answers into sections like "Overview", "Steps", "Requirements", "Contact Info", etc.
+
+    Context:
+    {context}
+
+    Question: {question}
+    """
+)
+
 def load_docs(docs):
     """Load documents and add them to the vector store."""
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=10)
@@ -69,7 +88,7 @@ prompt = base_prompt.partial(instructions=instructions)
 """All the Tools that are available to thi LLM
 request_all is the new one that i added"""
 #tools = load_tools([ "requests_all", "llm-math","wikipedia","terminal"], llm=llm, allow_dangerous_tools=True)
-tools = load_tools(["requests_all", "llm-math", "wikipedia"], llm=llm, allow_dangerous_tools=True)
+tools = load_tools(["llm-math", "wikipedia"], llm=llm, allow_dangerous_tools=True)
 
 
 """ Creating Reach Agent using list of Tools Promt and LLM of our Choice"""
@@ -87,11 +106,3 @@ while True:
       #  if line.startswith("htmlQ:"):
         result = rag_chain.invoke(line)
         print(result)
-  
-        """Invoke Lang Chain Agent if Input Does not start with htmlQ:"""
-        # elif line: 
-        #     result = agent_executor.invoke({"input":line})
-        #     print(result)
-      
-       # else:
-        #    break

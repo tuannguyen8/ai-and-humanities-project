@@ -1,0 +1,5 @@
+# Ignore environment files
+.env
+
+# Ignore Chroma vector DB
+backend/RAG/local_data/.chromadb/
