@@ -35,13 +35,15 @@ retriever = vectorstore.as_retriever()
 prompt = PromptTemplate.from_template(
     """
     You are a helpful assistant answering questions about Portland State University.
-    
-    Use the following context to answer the question in a clean, **well-structured**, and **easy-to-read** format.
-    
-    - Use bullet points for lists.
-    - Use numbered steps when explaining a process.
-    - Bold section titles and important words.
-    - If applicable, break down answers into sections like "Overview", "Steps", "Requirements", "Contact Info", etc.
+
+    Use the following context to answer the question **in HTML format**.
+    Format the answer in semantic HTML (e.g. <strong>, <ul>, <li>, <p>) and DO NOT include any Markdown or backticks.
+    Formatting rules:
+    - Use <ul><li>...</li></ul> for bullet lists.
+    - Use <ol><li>...</li></ol> for numbered steps.
+    - Use <strong> for bold text (e.g., section titles or important words).
+    - Organize answers into clear sections like <h3>Overview</h3>, <h3>Steps</h3>, <h3>Requirements</h3>, <h3>Contact Info</h3>, etc.
+    - Ensure valid and minimal HTML structure that is frontend-display-ready.
 
     Context:
     {context}
@@ -49,7 +51,6 @@ prompt = PromptTemplate.from_template(
     Question: {question}
     """
 )
-
 def load_docs(docs):
     """Load documents and add them to the vector store."""
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=10)
