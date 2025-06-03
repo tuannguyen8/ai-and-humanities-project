@@ -126,37 +126,40 @@ document.addEventListener("DOMContentLoaded", () => {
     academic: [
       "How do I register for classes?",
       "Where can I find the course schedule?",
-      "When does registration open?"
-    ],
-    admission: [
-      "Where is the Engineering Building?",
-      "How do I get to Smith Memorial Student Union?",
-      "Is there a campus map available?"
-    ],
-    athletic: [
-      "When does the fall term start?",
-      "What are the deadlines for dropping a class?",
-      "When is finals week?"
-    ],
-    studentlife: [
+      "When does registration open?",
       "How do I meet with an academic advisor?",
       "What are the degree requirements for CS?",
       "Can I change my major?"
     ],
-    research: [
-      "How much is tuition?",
-      "Are there scholarships available?",
-      "What is the FAFSA deadline?"
+    admission: [
+      "What are the admission requirements for first-year undergraduate students at PSU?",
+      "When is the application deadline for the fall term at Portland State University?",
+      "How do I check the status of my admission application to PSU?"
     ],
-    about: [
-      "What housing options are available?",
-      "How do I apply for housing?",
-      "Can I choose my roommate?"
+    athletic: [
+      "What NCAA division does Portland State University compete in?",
+      "How can students get tickets to PSU Vikings games?",
+      "Are there opportunities to join intramural or club sports at PSU?"
     ],
-    contact: [
+    studentlife: [
       "How can I join a student club?",
       "What clubs are available at PSU?",
       "Are there professional organizations on campus?"
+    ],
+    research: [
+      "What types of research opportunities are available for undergraduate students at PSU?",
+      "How can I get involved in faculty-led research projects at Portland State University?",
+      "Does PSU offer funding or grants for student research initiatives?"
+    ],
+    about: [
+      "Where is the Engineering Building?",
+      "How do I get to Smith Memorial Student Union?",
+      "Is there a campus map available?"
+    ],
+    contact: [
+      "How do I contact the admissions office at Portland State University?",
+      "Is there a general phone number or email for student support services at PSU?",
+      "Who should I reach out to for questions about financial aid at PSU?"
     ]
   };
 

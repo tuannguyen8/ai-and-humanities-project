@@ -183,7 +183,7 @@ body {
 
 .assistant-message {
   display: grid;
-  grid-template-columns: 60px 1fr; /* make space for centering */
+  grid-template-columns: 60px 1fr; 
   align-items: flex-start;
   /* gap: 1rem; */
   background-color: var(--psu-light-gray);
