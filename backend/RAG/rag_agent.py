@@ -43,6 +43,7 @@ prompt = PromptTemplate.from_template(
     - Use <ol><li>...</li></ol> for numbered steps.
     - Use <strong> for bold text (e.g., section titles or important words).
     - Organize answers into clear sections like <h3>Overview</h3>, <h3>Steps</h3>, <h3>Requirements</h3>, <h3>Contact Info</h3>, etc.
+    - if there is a link you can use to get more information, include it in the answer.
     - Ensure valid and minimal HTML structure that is frontend-display-ready.
 
     Context:
@@ -85,7 +86,7 @@ prompt = base_prompt.partial(instructions=instructions)
 """All the Tools that are available to thi LLM
 request_all is the new one that i added"""
 #tools = load_tools([ "requests_all", "llm-math","wikipedia","terminal"], llm=llm, allow_dangerous_tools=True)
-tools = load_tools(["llm-math", "wikipedia"], llm=llm, allow_dangerous_tools=True)
+tools = load_tools(["llm-math"], llm=llm, allow_dangerous_tools=True)
 
 
 """ Creating Reach Agent using list of Tools Promt and LLM of our Choice"""
